@@ -1,0 +1,14 @@
+<html>
+<body>
+    <h1>{{version.object}}</h1>
+    {% if version.object.get_absolute_url %}
+    <p><a href=http://{{site.domain}}{{version.object.get_absolute_url}}">View online</a></p>
+    {% endif %}
+    <p>
+        {% for row in patch %}
+            <b>{{ row.field }}:</b> {{row.html|safe}} <br />
+        {% endfor %}
+    </p>
+    <p><a href="http://{{site.domain}}{{admin_recover_url}}">Decline/Bullshit</a></p>
+</body>
+</html>

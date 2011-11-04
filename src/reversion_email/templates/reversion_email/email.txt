@@ -1,0 +1,8 @@
+{{version.object}}
+
+View online: http://{{site.domain}}{{version.object.get_absolute_url}}
+
+{% for row in patch %}
+{{ row.field }}: {{row.html|safe}}
+{% endfor %}
+Decline: http://{{site.domain}}{{admin_recover_url}}
