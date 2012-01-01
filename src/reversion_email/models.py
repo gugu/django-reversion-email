@@ -31,8 +31,8 @@ def send_diff_to_email(sender, instance, **kwargs):
         else:
             patch.append({
                 'field' : field.name, 
-                'html' : getattr(versions[0], field.name),
-                'text' : getattr(versions[0], field.name),
+                'html' : getattr(versions[0].object, field.name),
+                'text' : getattr(versions[0].object, field.name),
             })
 
     current_site = Site.objects.get_current()
