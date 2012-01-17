@@ -1,6 +1,4 @@
-"""Database models used by django-reversion."""
-
-import warnings
+"""Database models used by django-reversion-email."""
 
 from reversion.models import Version
 from django.conf import settings
