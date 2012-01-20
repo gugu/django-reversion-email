@@ -40,7 +40,7 @@ def send_diff_to_email(sender, instance, **kwargs):
         'version' : instance, 
         'patch' : patch,
         'site' : current_site, 
-        'admin_recover_url' : urlresolvers.reverse('admin:%s_%s_revision'  % url_info, args=[instance.object.pk, instance.pk])
+        'admin_recover_url' : urlresolvers.reverse('admin:%s_%s_revision'  % url_info, args=[versions[0].object.pk, instance.pk])
     })
     text_content = text_template.render(context)
     html_content = html_template.render(context)
