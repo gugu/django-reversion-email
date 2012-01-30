@@ -4,6 +4,7 @@ from reversion.models import Version
 from django.conf import settings
 from django.db.models import signals
 from django.core.mail import EmailMultiAlternatives
+from django.core.urlresolvers import NoReverseMatch
 from django.template.loader import get_template
 from django.template import Context
 from django.core import urlresolvers
@@ -40,8 +41,11 @@ def send_diff_to_email(sender, instance, **kwargs):
         'version' : instance, 
         'patch' : patch,
         'site' : current_site, 
-        'admin_recover_url' : urlresolvers.reverse('admin:%s_%s_revision'  % url_info, args=[versions[0].object.pk, instance.pk])
     })
+    try:
+        context['admin_recover_url'] = urlresolvers.reverse('admin:%s_%s_revision'  % url_info, args=[versions[0].object.pk, instance.pk])
+    except NoReverseMatch:
+        pass
     text_content = text_template.render(context)
     html_content = html_template.render(context)
 
