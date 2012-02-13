@@ -43,7 +43,8 @@ def send_diff_to_email(sender, instance, **kwargs):
         'site' : current_site, 
     })
     try:
-        context['admin_recover_url'] = urlresolvers.reverse('admin:%s_%s_revision'  % url_info, args=[versions[0].object.pk, instance.pk])
+        if len(versions)>1:
+            context['admin_recover_url'] = urlresolvers.reverse('admin:%s_%s_revision'  % url_info, args=[versions[1].object.pk, instance.pk])
     except NoReverseMatch:
         pass
     text_content = text_template.render(context)
