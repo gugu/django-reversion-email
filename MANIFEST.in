@@ -1,4 +1,3 @@
-include src/reversion/templates/reversion/*.html
-include src/reversion/locale/*/LC_MESSAGES/django.*
+include src/reversion_email/templates/reversion_email/*.html
 include LICENSE
 include README.markdown
