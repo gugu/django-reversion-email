@@ -1,17 +1,16 @@
 """Database models used by django-reversion-email."""
 
 from django.conf import settings
-from django.db.models import signals
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import NoReverseMatch
 from django.template.loader import get_template
 from django.template import Context
 from django.core import urlresolvers
-from django.contrib.sites.models import Site
 import difflib
 
 
 def send_diff_to_email(sender, instance, **kwargs):
+    from django.contrib.sites.models import Site
     versions = sender.objects.filter(content_type=instance.content_type, object_id=instance.object_id).order_by('-id')
     html_template = get_template('reversion_email/email.html')
     text_template = get_template('reversion_email/email.txt')
@@ -65,5 +64,5 @@ def send_diff_to_email(sender, instance, **kwargs):
     email.send()
 
 if hasattr(settings,'MODERATORS'):
-    import reversion.models
-    signals.post_save.connect(send_diff_to_email, sender = reversion.models.Version)
+    from reversion import post_revision_commit, models
+    post_revision_commit.connect(send_diff_to_email, sender = models.Version)
