@@ -9,20 +9,20 @@ from django.core import urlresolvers
 import difflib
 
 
-def send_diff_to_email(sender, instance, **kwargs):
+def send_diff_to_email(instances, revision, versions, **kwargs):
     from django.contrib.sites.models import Site
-    versions = sender.objects.filter(content_type=instance.content_type, object_id=instance.object_id).order_by('-id')
     html_template = get_template('reversion_email/email.html')
     text_template = get_template('reversion_email/email.txt')
 
     patch = []
-    object_meta = instance.content_type.model_class()._meta
+    instance = instances[0]
+    object_meta = instance.__class__._meta
     html_diff = difflib.HtmlDiff()
     text_diff = difflib.Differ()
 
 
     for field in object_meta.fields:
-        if versions.count() > 1 and (versions[1].object is not None) and (versions[0].object is not None):
+        if len(versions) > 1 and (versions[1].object is not None) and (versions[0].object is not None):
             patch.append({ 
                 'field' : field.name, 
                 'html' : html_diff.make_file([unicode(getattr(versions[1].object, field.name))],[unicode(getattr(versions[0].object,field.name))]),
@@ -52,7 +52,7 @@ def send_diff_to_email(sender, instance, **kwargs):
     html_content = html_template.render(context)
 
     email = EmailMultiAlternatives(
-        subject = settings.EMAIL_SUBJECT_PREFIX + instance.revision.comment,
+        subject = settings.EMAIL_SUBJECT_PREFIX + revision.comment,
         body = text_content, 
         from_email = settings.SERVER_EMAIL, 
         to = [
@@ -65,4 +65,4 @@ def send_diff_to_email(sender, instance, **kwargs):
 
 if hasattr(settings,'MODERATORS'):
     from reversion import post_revision_commit, models
-    post_revision_commit.connect(send_diff_to_email, sender = models.Version)
+    post_revision_commit.connect(send_diff_to_email)
